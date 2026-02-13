@@ -1,0 +1,14 @@
+@apiUrl = http://localhost:3000/api/v1
+@taskUrl = {{apiUrl}}/tasks
+
+POST {{taskUrl}}
+Content-Type: application/json
+
+{
+    "task" : "Test",
+    "hour" : 10,
+    "type" : "good"
+}
+
+###
+GET {{taskUrl}}
