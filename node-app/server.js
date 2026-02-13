@@ -83,14 +83,12 @@ app.delete("/api/v1/tasks", (req, res) => {
   let taskid = tasks.params.id;
 
   // read tasks.json
-  let taskList = JSON.parse(fs.readFileSync("/data/tasks.json", "utf-8"));
+  let taskList = JSON.parse(fs.readFileSync("./data/tasks.json", "utf-8"));
 
-  // find the task with the same taskId
-
-  let task = tasks.find((t) => t.id == taskid);
+  let filtertask = taskList.filter((t) => t.id != taskid);
 
   // write the changes in the file
-  fs.writeFileSync("/data/tasks.json", JSON.stringify(tasks));
+  fs.writeFileSync("./data/tasks.json", JSON.stringify(filtertask));
 
   return res.send({
     status: "Sucess",

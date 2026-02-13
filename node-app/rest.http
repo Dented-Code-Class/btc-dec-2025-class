@@ -20,3 +20,7 @@ Content-Type: application/json
 {
     "type" : "bad"
 }
+
+
+###
+DELETE {{taskUrl}}/2RhZJA
