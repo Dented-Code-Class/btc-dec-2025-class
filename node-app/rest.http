@@ -12,3 +12,11 @@ Content-Type: application/json
 
 ###
 GET {{taskUrl}}
+
+###
+PATCH {{taskUrl}}/2RhZJA
+Content-Type: application/json
+
+{
+    "type" : "bad"
+}

@@ -51,8 +51,53 @@ app.get("/api/v1/tasks", (req, res) => {
 });
 
 // Update
+app.patch("/api/v1/tasks/:id", (req, res) => {
+  //1. get task id
+  let taskid = req.params.id;
+
+  // read tasks.json
+  let taskList = JSON.parse(fs.readFileSync("./data/tasks.json", "utf-8"));
+
+  // find the task with the same taskId
+
+  let task = taskList.find((t) => t.id == taskid);
+
+  //get update payload
+  let updatePayload = req.body;
+
+  task.hour = updatePayload.hour ?? task.hour;
+  task.type = updatePayload.type ?? task.type;
+
+  // write the changes in the file
+  fs.writeFileSync("./data/tasks.json", JSON.stringify(taskList));
+
+  return res.send({
+    status: "Sucess",
+    message: "Update successful",
+  });
+});
 
 // Delete
+app.delete("/api/v1/tasks", (req, res) => {
+  //1. get task id
+  let taskid = tasks.params.id;
+
+  // read tasks.json
+  let taskList = JSON.parse(fs.readFileSync("/data/tasks.json", "utf-8"));
+
+  // find the task with the same taskId
+
+  let task = tasks.find((t) => t.id == taskid);
+
+  // write the changes in the file
+  fs.writeFileSync("/data/tasks.json", JSON.stringify(tasks));
+
+  return res.send({
+    status: "Sucess",
+    message: "Update successful",
+  });
+});
+
 app.listen(PORT, (error) => {
   if (error) {
     console.log(error);
