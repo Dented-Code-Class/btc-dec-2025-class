@@ -6,7 +6,7 @@ import cors from "cors";
 configDotenv();
 const app = express();
 const PORT = process.env.PORT || 3000;
-const MONGO_URL = process.env.MONGO_URL || "mongodb://localhost:27017/ntdl-d";
+const MONGO_URL = process.env.MONGO_URL || "mongodb://localhost:27017/user-db";
 
 app.use(express.json());
 app.use(cors());
