@@ -1,16 +1,14 @@
 import express from "express";
 import fs from "fs";
 import { randomIdGenerator } from "./helpers/helper.js";
-import mongoose from "mongoose";
+import mongoose, { mongo } from "mongoose";
 import { configDotenv } from "dotenv";
-
 configDotenv();
-
 const app = express();
 const PORT = process.env.PORT || 3000;
-const MONGO_URL = process.env.MONGO_URL || "mongodb://localhost:27017/ntdl-db";
+const MONGO_URL = process.env.MONGO_URL || "mongodb://localhost:27017/ntdl-d";
 
-// Task Schema
+// TAsk schema
 let taskSchema = new mongoose.Schema({
   task: {
     type: String,
@@ -27,7 +25,7 @@ let taskSchema = new mongoose.Schema({
   },
 });
 
-// Task Model
+//Task model
 const Task = mongoose.model("Task", taskSchema);
 
 // req.body
@@ -47,8 +45,8 @@ app.get("/", (req, res) => {
 // POST api/v1/tasks
 // {task, hour, type}
 app.post("/api/v1/tasks", async (req, res) => {
+  // 1. get paylod
   try {
-    // 1. get paylod
     let newTask = req.body;
     // 1.1 populate new id
     // newTask.id = randomIdGenerator();
@@ -65,11 +63,11 @@ app.post("/api/v1/tasks", async (req, res) => {
       status: "success",
       message: "Task Created",
     });
-  } catch (err) {
-    console.log(err);
-    return res.status(500).send({
-      status: "error",
-      message: "Error creating Task",
+  } catch (error) {
+    console.log("err");
+    return res.send({
+      status: "Error",
+      message: "Error found",
     });
   }
 });
@@ -91,9 +89,9 @@ app.get("/api/v1/tasks", async (req, res) => {
 app.patch("/api/v1/tasks/:id", async (req, res) => {
   try {
     //1. get task id
-    let taskId = req.params.id;
+    let taskid = req.params.id;
 
-    // // read tasks.json
+    // read tasks.json
     // let taskList = JSON.parse(fs.readFileSync("./data/tasks.json", "utf-8"));
 
     // // find the task with the same taskId
@@ -108,51 +106,56 @@ app.patch("/api/v1/tasks/:id", async (req, res) => {
 
     // // write the changes in the file
     // fs.writeFileSync("./data/tasks.json", JSON.stringify(taskList));
-
     let updatePayload = req.body;
-    const data = await Task.findByIdAndUpdate(taskId, updatePayload, {
+
+    const data = await Task.findByIdAndUpdate(taskid, updatePayload, {
       new: true,
     });
 
     return res.send({
-      status: "success",
+      status: "Sucess",
       message: "Update successful",
       data,
     });
-  } catch (err) {
-    console.log(err.message);
+  } catch (error) {
+    console.log(error);
     return res.status(500).send({
-      status: "error",
-      message: "Task update error",
+      status: "Error",
+      message: "Updating Failed",
+      Error,
     });
   }
 });
 
 // Delete
-app.delete("/api/v1/tasks/:id", (req, res) => {
+app.delete("/api/v1/tasks/:id", async (req, res) => {
   //1. get task id
-  let taskid = req.params.id;
+  try {
+    let taskid = req.params.id;
 
-  // read tasks.json
-  let taskList = JSON.parse(fs.readFileSync("./data/tasks.json", "utf-8"));
+    // // read tasks.json
+    // let taskList = JSON.parse(fs.readFileSync("./data/tasks.json", "utf-8"));
 
-  // find the task with the same taskId
-  let task = taskList.find((t) => t.id === taskid);
+    // // find the task with the same taskId
+    // let task = taskList.find((t) => t.id === taskid);
 
-  if (task) {
-    let filtertask = taskList.filter((t) => t.id != taskid);
+    // if (task) {
+    //   let filtertask = taskList.filter((t) => t.id != taskid);
 
-    // write the changes in the file
-    fs.writeFileSync("./data/tasks.json", JSON.stringify(filtertask));
+    //   // write the changes in the file
+    //   fs.writeFileSync("./data/tasks.json", JSON.stringify(filtertask));
 
+    let data = await Task.findByIdAndDelete(taskid);
     return res.send({
       status: "Sucess",
-      message: "Update successful",
+      message: "Delete successful",
+      data,
     });
-  } else {
-    return res.send({
-      status: "error",
-      message: "Task not found",
+  } catch (error) {
+    console.log(error);
+    return res.status(500).send({
+      status: "Error",
+      message: "Error deleting task",
     });
   }
 });
@@ -160,7 +163,7 @@ app.delete("/api/v1/tasks/:id", (req, res) => {
 mongoose
   .connect(MONGO_URL)
   .then(() => {
-    console.log("MONGO CONNECTED: ", MONGO_URL);
+    console.log("MONGO CONNECTED", MONGO_URL);
     app.listen(PORT, (error) => {
       if (error) {
         console.log(error);
@@ -171,5 +174,6 @@ mongoose
     });
   })
   .catch((err) => {
-    console.log("Mongo Connection Error!!");
+    console.log(err);
+    console.log("ERROR MONGO");
   });

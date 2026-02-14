@@ -5,22 +5,29 @@ POST {{taskUrl}}
 Content-Type: application/json
 
 {
+<<<<<<< HEAD
     "task" : "Database Task",
     "hour" : 90,
     "type" : "good"
+=======
+    "task" : "Least",
+    "hour" : 30,
+    "type" : "bad"
+>>>>>>> shankar
 }
 
 ###
 GET {{taskUrl}}
 
 ###
-PATCH {{taskUrl}}/698fc1e9e832f26269904cec
+PATCH {{taskUrl}}/698fc1f355d3f3fbe0eb3ece
 Content-Type: application/json
 
 {
-    "hour" : 100
+    "hour" : 100,
+    "type" : "good"
 }
 
 
 ###
-DELETE {{taskUrl}}/2RhZJA
+DELETE {{taskUrl}}/698fc902f21219efeb86c8cf
