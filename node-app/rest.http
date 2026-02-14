@@ -5,15 +5,9 @@ POST {{taskUrl}}
 Content-Type: application/json
 
 {
-<<<<<<< HEAD
-    "task" : "Database Task",
-    "hour" : 90,
-    "type" : "good"
-=======
     "task" : "Least",
     "hour" : 30,
     "type" : "bad"
->>>>>>> shankar
 }
 
 ###

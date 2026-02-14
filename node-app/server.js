@@ -3,6 +3,8 @@ import fs from "fs";
 import { randomIdGenerator } from "./helpers/helper.js";
 import mongoose, { mongo } from "mongoose";
 import { configDotenv } from "dotenv";
+import cors from "cors";
+
 configDotenv();
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -28,8 +30,9 @@ let taskSchema = new mongoose.Schema({
 //Task model
 const Task = mongoose.model("Task", taskSchema);
 
-// req.body
 app.use(express.json());
+app.use(cors());
+// req.body
 
 // GET base url
 app.get("/", (req, res) => {
@@ -57,11 +60,15 @@ app.post("/api/v1/tasks", async (req, res) => {
     // // 4. write to database / file
     // fs.writeFileSync("./data/tasks.json", JSON.stringify(taskList));
 
+    console.log(1010, newTask);
     let data = await Task.insertOne(newTask);
+
+    console.log(2020, data);
 
     return res.status(201).send({
       status: "success",
       message: "Task Created",
+      task: data,
     });
   } catch (error) {
     console.log("err");
@@ -113,7 +120,7 @@ app.patch("/api/v1/tasks/:id", async (req, res) => {
     });
 
     return res.send({
-      status: "Sucess",
+      status: "success",
       message: "Update successful",
       data,
     });
@@ -147,7 +154,7 @@ app.delete("/api/v1/tasks/:id", async (req, res) => {
 
     let data = await Task.findByIdAndDelete(taskid);
     return res.send({
-      status: "Sucess",
+      status: "success",
       message: "Delete successful",
       data,
     });
