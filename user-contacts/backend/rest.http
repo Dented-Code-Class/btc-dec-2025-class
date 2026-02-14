@@ -1,0 +1,23 @@
+@apiUrl = http://localhost:3000/api/v1
+@userURL = {{apiUrl}}/users
+
+POST {{userURL}}
+Content-Type: application/json
+
+{
+    "name" : "Manish",
+    "phone" : 938738284,
+    "address" : "Campsie 2194"
+}
+
+###
+GET {{userURL}}
+
+
+####
+PATCH {{userURL}}/6991053cd8819e8918aadf36
+Content-Type: application/json
+
+{
+    "phone": 1000
+}

@@ -2,6 +2,12 @@ import express from "express";
 import mongoose, { mongo } from "mongoose";
 import { configDotenv } from "dotenv";
 import cors from "cors";
+import {
+  createUser,
+  deleteUser,
+  getUsers,
+  updateUser,
+} from "./src/controllers/userController.js";
 
 configDotenv();
 const app = express();
@@ -18,9 +24,18 @@ app.get("/", (req, res) => {
     message: "User API",
   });
 });
+//POST
+app.post("/api/v1/users", createUser);
+//GET
+app.get("/api/v1/users", getUsers);
+
+//PATCH
+app.patch("/api/v1/users/:id", updateUser);
+//DELETE
+app.delete("/api/v1/users/:id", deleteUser);
 
 mongoose
-  .connect(MONGO_URL)
+  .connect(MONGO_URL) // MONGOURL --> Connection string
   .then(() => {
     console.log("MONGO CONNECTED", MONGO_URL);
     app.listen(PORT, (error) => {
