@@ -6,39 +6,51 @@ const TaskForm = (props) => {
   const [hour, setHour] = useState(0);
   const [type, setType] = useState("good");
 
-  const randomIdGenerator = (inputLen = 6) => {
-    /**
-     * Function Description: Generate random string with length 6
-     * inputLen: input length of string, default value is 6
-     */
-    const characters =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  // const randomIdGenerator = (inputLen = 6) => {
+  //   /**
+  //    * Function Description: Generate random string with length 6
+  //    * inputLen: input length of string, default value is 6
+  //    */
+  //   const characters =
+  //     "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
-    let rString = "";
-    let length = inputLen;
+  //   let rString = "";
+  //   let length = inputLen;
 
-    for (let i = 0; i < length; i++) {
-      let randomNumber = Math.floor(Math.random() * characters.length);
+  //   for (let i = 0; i < length; i++) {
+  //     let randomNumber = Math.floor(Math.random() * characters.length);
 
-      rString += characters[randomNumber];
-    }
+  //     rString += characters[randomNumber];
+  //   }
 
-    return rString;
-  };
+  //   return rString;
+  // };
 
-  const handleOnSubmit = (e) => {
+  const handleOnSubmit = async (e) => {
     e.preventDefault();
     // create the task object
 
     if (task != "" && hour != 0 && type != "") {
       let taskObject = {
-        id: randomIdGenerator(),
         task: task,
         hour: hour,
         type: type,
       };
 
       console.log("task object", taskObject);
+      // call post api
+      // create task api
+      let response = await fetch("http://localhost:3000/api/v1/tasks", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // Indicate that the body is JSON
+        },
+        body: JSON.stringify(taskObject),
+      });
+
+      let data = await response.json();
+
+      taskObject.id = data.task._id;
 
       // add to main original tasks list
       props.setTasks((prev) => {
