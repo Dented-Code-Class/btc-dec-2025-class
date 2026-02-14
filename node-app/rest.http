@@ -5,7 +5,7 @@ POST {{taskUrl}}
 Content-Type: application/json
 
 {
-    "task" : "Least",
+    "task" : "ssss",
     "hour" : 30,
     "type" : "bad"
 }
