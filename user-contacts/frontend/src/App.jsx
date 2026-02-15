@@ -1,35 +1,59 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
+import UserList from "./components/UserList";
+import UserForm from "./components/UserForm";
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [users, setUsers] = useState([
+    {
+      _id: "12",
+      name: "mark",
+      phone: 982392,
+      address: "lidcombe",
+    },
+  ]);
+  const fetchUser = async () => {
+    let response = await fetch("http://localhost:3000/api/v1/users");
+    let data = await response.json();
+    console.log(data);
+    setUsers(data.users);
+  };
+
+  const addUser = async (userObj) => {
+    let response = await fetch("http://localhost:3000/api/v1/users", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(userObj),
+    });
+    let data = await response.json();
+    fetchUser();
+  };
+
+  useEffect(() => {
+    fetchUser();
+  }, []);
+
+  const deleteUser = async (id) => {
+    let response = await fetch("http://localhost:3000/api/v1/users/" + id, {
+      method: "DELETE",
+    });
+    let data = await response.json();
+    console.log(data);
+    if (data.status === "success") {
+      let filteredUsers = users.filter((item) => item._id != id);
+      setUsers(filteredUsers);
+    }
+  };
 
   return (
     <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
+      <UserList users={users} deleteUser={deleteUser} />
+      <UserForm addUser={addUser} />
     </>
-  )
+  );
 }
 
-export default App
+export default App;
