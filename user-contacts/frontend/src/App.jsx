@@ -13,6 +13,7 @@ function App() {
       address: "lidcombe",
     },
   ]);
+  const [editingUser, setEditingUser] = useState(null);
   const fetchUser = async () => {
     let response = await fetch("http://localhost:3000/api/v1/users");
     let data = await response.json();
@@ -47,11 +48,32 @@ function App() {
       setUsers(filteredUsers);
     }
   };
+  const updateUser = async (id, updateUser) => {
+    let response = await fetch("http://localhost:3000/api/v1/users/" + id, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(updateUser),
+    });
+    let data = await response.json();
+    fetchUser();
+    setEditingUser(null);
+  };
 
   return (
     <>
-      <UserList users={users} deleteUser={deleteUser} />
-      <UserForm addUser={addUser} />
+      <UserList
+        users={users}
+        deleteUser={deleteUser}
+        setEditingUser={setEditingUser}
+      />
+      <UserForm
+        addUser={addUser}
+        editingUser={editingUser}
+        updateUser={updateUser}
+        setEditingUser={setEditingUser}
+      />
     </>
   );
 }

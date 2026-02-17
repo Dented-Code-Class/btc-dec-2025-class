@@ -1,13 +1,33 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { Button, Col, Form, InputGroup, Row } from "react-bootstrap";
 
-const UserForm = ({ addUser }) => {
+const UserForm = ({ addUser, editingUser, setEditingUser, updateUser }) => {
   const nameRef = useRef(null);
   const phoneRef = useRef(null);
   const addressRef = useRef(null);
+
+  useEffect(() => {
+    if (editingUser) {
+      nameRef.current.value = editingUser.name ?? "";
+      phoneRef.current.value = editingUser.phone ?? "";
+      addressRef.current.value = editingUser.address ?? "";
+    } else {
+      // When edit mode ends, clear the form back to Add mode
+      if (nameRef.current) nameRef.current.value = "";
+      if (phoneRef.current) phoneRef.current.value = "";
+      if (addressRef.current) addressRef.current.value = "";
+    }
+  }, [editingUser]);
+
+  // ADDED: helper to clear form after submit/cancel
+  const clearForm = () => {
+    nameRef.current.value = "";
+    phoneRef.current.value = "";
+    addressRef.current.value = "";
+  };
   return (
     <>
-      <h2>USER FORM</h2>
+      <h2>{editingUser ? "UPDATE USER" : "USER FORM"}</h2>
       <hr />
       <Form
         onSubmit={(e) => {
@@ -17,7 +37,14 @@ const UserForm = ({ addUser }) => {
             phone: phoneRef.current.value,
             address: addressRef.current.value,
           };
-          addUser(userObj);
+          if (editingUser) {
+            updateUser(editingUser._id, userObj);
+            // updateUser will setEditingUser(null) in App
+          } else {
+            addUser(userObj);
+          }
+
+          clearForm();
         }}
       >
         <Row className="mb-3">
@@ -46,7 +73,27 @@ const UserForm = ({ addUser }) => {
             <Form.Control ref={addressRef} type="text" placeholder="Address" />
           </Form.Group>
         </Row>
-        <Button type="submit">Submit form</Button>
+        <div className="d-flex gap-2">
+          {/* ADDED: button text changes based on mode */}
+          <Button type="submit" variant={editingUser ? "warning" : "primary"}>
+            {editingUser ? "Update User" : "Add User"}
+          </Button>
+
+          {/* ADDED: Cancel editing */}
+          {/* Why: lets you exit edit mode without submitting */}
+          {editingUser && (
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => {
+                setEditingUser(null);
+                clearForm();
+              }}
+            >
+              Cancel
+            </Button>
+          )}
+        </div>
       </Form>
     </>
   );

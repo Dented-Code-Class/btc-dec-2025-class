@@ -1,7 +1,7 @@
 import React from "react";
 import { Button, Table } from "react-bootstrap";
 
-const UserList = ({ users, deleteUser }) => {
+const UserList = ({ users, deleteUser, setEditingUser }) => {
   return (
     <>
       <h2>USER LIST</h2>
@@ -33,7 +33,9 @@ const UserList = ({ users, deleteUser }) => {
                   >
                     Delete
                   </Button>
-                  <Button>Update</Button>
+                  <Button variant="warning" onClick={() => setEditingUser(u)}>
+                    Update
+                  </Button>
                 </td>
               </tr>
             );
